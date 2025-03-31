@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js para Backend
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Instalar dependencias Backend
+        run: |
+          cd backend
+          npm install
+
+      - name: Ejecutar pruebas Backend
+        run: |
+          npm test
+        working-directory: backend
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js para Frontend
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Instalar dependencias Frontend
+        run: |
+          cd frontend
+          npm install
+
+      - name: Ejecutar pruebas Frontend
+        run: |
+          npm test
+        working-directory: frontend
+
+  docker-build:
+    name: Build and Verify Docker Image
+    needs: [backend-tests, frontend-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Construir imagen Docker
+        run: |
+          docker build -t backend-image ./backend
+
+      - name: Verificar que la imagen corre
+        run: |
+          docker run --rm backend-image npm test
