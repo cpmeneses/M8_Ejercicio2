@@ -6,15 +6,15 @@ jobs:
   backend-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Dar permisos de ejecución a Jest
-        run: chmod +x node_modules/.bin/jest
-        working-directory: backend
-
       - name: Clone repository
         uses: actions/checkout@v2
 
       - name: Install backend dependencies
         run: npm install
+        working-directory: backend
+
+      - name: Dar permisos de ejecución a Jest
+        run: chmod +x node_modules/.bin/jest
         working-directory: backend
 
       - name: Verificar instalación de Jest
