@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest --roots ../tests"
+    "test": "npx jest --roots ../tests"
   },
   "keywords": [],
   "author": "",
